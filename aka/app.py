@@ -39,7 +39,21 @@ def hitung_suku_rekursif(a, r, n):
 
 # --- ANTARMUKA STREAMLIT ---
 
-st.set_page_config(page_title="Analisis Algoritma - Suku Geometri", layout="centered")
+st.set_page_config(page_title="Analisis Algoritma", layout="centered")
+
+st.markdown("""
+<style>
+    [data-testid="stCodeBlock"] pre {
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+    }
+    @media only screen and (max-width: 600px) {
+        [data-testid="stCodeBlock"] code {
+            font-size: 12px !important;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # 1. JUDUL & HEADER
 st.title("🌐 Perbandingan Iteratif vs Rekursif")
