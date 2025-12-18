@@ -61,7 +61,7 @@ st.subheader("Studi Kasus: Menghitung Suku Ke-n Deret Geometri")
 
 st.info("""
 ℹ️ **Info:** Aplikasi ini menghitung nilai suku ke-n ($S_n$) dari sebuah barisan geometri.
-Algoritma diadaptasi langsung dari pseudo-code untuk mencari suku tertentu, bukan jumlah deret.
+Algoritma yang digunakan adalah Iteratif dan Rekursif. Algoritma ini hanya untuk mencari suku tertentu, bukan jumlah deret.
 """)
 
 # 2. INPUT USER
