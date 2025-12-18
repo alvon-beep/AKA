@@ -43,15 +43,21 @@ st.set_page_config(page_title="Analisis Algoritma - Suku Geometri", layout="cent
 
 st.markdown("""
 <style>
-    [data-testid="stCodeBlock"] pre {
-        white-space: pre-wrap !important;
-        word-break: break-word !important;
-    }
+    /* 1. CSS untuk Layar HP (Lebar < 600px) */
     @media only screen and (max-width: 600px) {
+        [data-testid="stCodeBlock"] pre {
+            white-space: pre-wrap !important; /* Paksa turun baris di HP */
+            word-wrap: break-word !important;
+        }
+        
+        /* Kecilkan font sedikit biar muat banyak di HP */
         [data-testid="stCodeBlock"] code {
-            font-size: 12px !important;
+            font-size: 11px !important;
         }
     }
+
+    /* 2. CSS untuk PC (Biarkan default / scroll samping jika perlu) */
+    /* Tidak perlu coding apa-apa, Streamlit defaultnya sudah bagus buat PC */
 </style>
 """, unsafe_allow_html=True)
 
@@ -88,26 +94,21 @@ with tab_iter:
     
     # Kita tulis string pseudocode-nya manual agar formatnya rapi
     code_iteratif = """
-FUNCTION HitungSukuIteratif(
-    a, r, n
-)
-    // a: Suku pertama
-    // r: Rasio
-    // n: Suku dicari
+FUNCTION HitungSukuIteratif(a, r, n)
+    // a: Suku pertama, r: Rasio, n: Suku dicari
 
     IF n <= 1 THEN
         RETURN a
     END IF
 
-    suku_sekarang = a
+    suku_current = a
     
-    // Loop dari 2 s.d n
+    // Loop dari 2 sampai n
     FOR i FROM 2 TO n DO
-        suku_sekarang = 
-          suku_sekarang * r
+        suku_current = suku_current * r
     END FOR
 
-    RETURN suku_sekarang
+    RETURN suku_current
 END FUNCTION
     """
     # language='vb' atau 'lua' biasanya memberikan coloring yang bagus untuk pseudocode
@@ -118,24 +119,19 @@ with tab_rec:
     st.write("Fungsi memanggil dirinya sendiri `(n-1)` sampai mencapai basis `n=1`.")
     
     code_rekursif = """
-FUNCTION HitungSukuRekursif(
-    a, r, n
-)
+FUNCTION HitungSukuRekursif(a, r, n)
     // Base Case
     IF n == 1 THEN
         RETURN a
     
     // Recursive Step
     ELSE
-        // Panggil diri sendiri
-        // utk (n-1)
-        RETURN HitungSukuRekursif(
-            a, r, n - 1
-        ) * r
+        // Panggil fungsi diri sendiri untuk (n-1) lalu kalikan rasio
+        RETURN HitungSukuRekursif(a, r, n - 1) * r
     END IF
 
 END FUNCTION
-    """
+"""
     st.code(code_rekursif, language='vb')
 
 
