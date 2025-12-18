@@ -66,7 +66,7 @@ st.title("🌐 Perbandingan Iteratif vs Rekursif")
 st.subheader("Studi Kasus: Menghitung Suku Ke-n Deret Geometri")
 
 st.info("""
-ℹ️ **Info:** Aplikasi ini menghitung nilai suku ke-n ($S_n$) dari sebuah barisan geometri.
+ℹ️ **Info:** Aplikasi ini menghitung nilai suku ke-n ($U_n$) dari sebuah barisan geometri.
 Algoritma yang digunakan adalah Iteratif dan Rekursif. Algoritma ini hanya untuk mencari suku tertentu, bukan jumlah deret.
 """)
 
@@ -152,8 +152,8 @@ if st.button("Jalankan Algoritma"):
     waktu_rec = (end_rec - start_rec) * 1000 # ms
 
     # 4. OUTPUT HASIL
-    st.success(f"✅ **Iteratif:** S({n}) = {hasil_iter} | Waktu = {waktu_iter:.6f} ms")
-    st.error(f"🔁 **Rekursif:** S({n}) = {hasil_rec} | Waktu = {waktu_rec:.6f} ms")
+    st.success(f"✅ **Iteratif:** U({n}) = {hasil_iter} | Waktu = {waktu_iter:.6f} ms")
+    st.error(f"🔁 **Rekursif:** U({n}) = {hasil_rec} | Waktu = {waktu_rec:.6f} ms")
 
     # 5. VISUALISASI BAR CHART
     st.write("### 📊 Perbandingan Waktu Eksekusi")
