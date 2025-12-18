@@ -39,7 +39,7 @@ def hitung_suku_rekursif(a, r, n):
 
 # --- ANTARMUKA STREAMLIT ---
 
-st.set_page_config(page_title="Analisis Algoritma", layout="centered")
+st.set_page_config(page_title="Analisis Algoritma - Suku Geometri", layout="centered")
 
 st.markdown("""
 <style>
@@ -88,23 +88,26 @@ with tab_iter:
     
     # Kita tulis string pseudocode-nya manual agar formatnya rapi
     code_iteratif = """
-FUNCTION HitungSukuIteratif(a, r, n)
+FUNCTION HitungSukuIteratif(
+    a, r, n
+)
     // a: Suku pertama
     // r: Rasio
-    // n: Suku yang dicari
+    // n: Suku dicari
 
     IF n <= 1 THEN
         RETURN a
     END IF
 
-    suku_sekarang = a
+    suku_cur = a
     
-    // Loop dari 2 sampai n
+    // Loop dari 2 s.d n
     FOR i FROM 2 TO n DO
-        suku_sekarang = suku_sekarang * r
+        suku_cur = 
+          suku_cur * r
     END FOR
 
-    RETURN suku_sekarang
+    RETURN suku_cur
 END FUNCTION
     """
     # language='vb' atau 'lua' biasanya memberikan coloring yang bagus untuk pseudocode
@@ -115,18 +118,20 @@ with tab_rec:
     st.write("Fungsi memanggil dirinya sendiri `(n-1)` sampai mencapai basis `n=1`.")
     
     code_rekursif = """
-FUNCTION HitungSukuRekursif(a, r, n)
-    // a: Suku pertama
-    // r: Rasio
-    // n: Suku yang dicari
-
+FUNCTION HitungSukuRekursif(
+    a, r, n
+)
     // Base Case
     IF n == 1 THEN
         RETURN a
     
     // Recursive Step
     ELSE
-        RETURN HitungSukuRekursif(a, r, n - 1) * r
+        // Panggil diri sendiri
+        // utk (n-1)
+        RETURN HitungSukuRekursif(
+            a, r, n - 1
+        ) * r
     END IF
 
 END FUNCTION
