@@ -46,7 +46,7 @@ st.title("🌐 Perbandingan Iteratif vs Rekursif")
 st.subheader("Studi Kasus: Menghitung Suku Ke-n Deret Geometri")
 
 st.info("""
-ℹ️ **Info:** Aplikasi ini menghitung nilai suku ke-n ($U_n$) dari sebuah barisan geometri.
+ℹ️ **Info:** Aplikasi ini menghitung nilai suku ke-n ($S_n$) dari sebuah barisan geometri.
 Algoritma diadaptasi langsung dari pseudo-code untuk mencari suku tertentu, bukan jumlah deret.
 """)
 
