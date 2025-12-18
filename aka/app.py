@@ -99,15 +99,15 @@ FUNCTION HitungSukuIteratif(
         RETURN a
     END IF
 
-    suku_cur = a
+    suku_sekarang = a
     
     // Loop dari 2 s.d n
     FOR i FROM 2 TO n DO
-        suku_cur = 
-          suku_cur * r
+        suku_sekarang = 
+          suku_sekarang * r
     END FOR
 
-    RETURN suku_cur
+    RETURN suku_sekarang
 END FUNCTION
     """
     # language='vb' atau 'lua' biasanya memberikan coloring yang bagus untuk pseudocode
