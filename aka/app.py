@@ -278,20 +278,20 @@ c1, c2, c3 = st.columns(3)
 
 with c1:
     st.markdown("""
-    <div class="desc-container">
-        <h4>📖 Konsep Deret Geometri</h4>
-        <p>Kode ini menghitung <b>Jumlah Total (Sn)</b>, yaitu akumulasi penjumlahan dari suku pertama hingga suku ke-n.</p>
-        <p><b>Definisi:</b><br>
-        Deret di mana rasio antara dua suku berturutan selalu tetap (r).</p>
-        <p><b>Rumus:</b> $S_n = a(r^n - 1) / (r - 1)$ (untuk r>1)</p>
-        <p><b>Variabel:</b></p>
-        <ul>
-            <li><span class="code-highlight">a</span>: Suku awal.</li>
-            <li><span class="code-highlight">r</span>: Rasio pengali.</li>
-            <li><span class="code-highlight">n</span>: Jumlah iterasi.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="desc-container">
+    <h4>📖 Konsep Deret Geometri</h4>
+    <p>Kode ini menghitung <b>Jumlah Total (Sn)</b>, yaitu akumulasi penjumlahan dari suku pertama hingga suku ke-n.</p>
+    <p><b>Definisi:</b><br>
+    Deret di mana rasio antara dua suku berturutan selalu tetap (r).</p>
+    <p><b>Rumus:</b> <i>S<sub>n</sub></i> = a(r<sup>n</sup> - 1) / (r - 1) <small>(untuk r > 1)</small></p>
+    <p><b>Variabel:</b></p>
+    <ul>
+        <li><span class="code-highlight">a</span>: Suku awal.</li>
+        <li><span class="code-highlight">r</span>: Rasio pengali.</li>
+        <li><span class="code-highlight">n</span>: Jumlah iterasi.</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
 
 with c2:
     st.markdown("""
