@@ -21,7 +21,7 @@ st.markdown("""
         }
     }
 
-    /* Kotak Penjelasan (Card Style) */
+    /* Kotak Penjelasan (Card Style) - FULL VERSION */
     .desc-container {
         background-color: rgba(41, 182, 246, 0.1);
         border: 1px solid rgba(41, 182, 246, 0.4);
@@ -29,12 +29,13 @@ st.markdown("""
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 15px;
-        height: 300px;
+        height: 300px; /* Set fixed height for equal box sizes */
         display: flex;
         flex-direction: column;
-        overflow-y: auto;
+        overflow-y: auto; /* Add scroll if content exceeds height */
     }
     
+    /* Judul di dalam kotak */
     .desc-container h4 {
         margin-top: 0;
         margin-bottom: 10px;
@@ -44,21 +45,23 @@ st.markdown("""
         padding-bottom: 5px;
     }
 
+    /* Teks paragraf & list */
     .desc-container p, .desc-container li {
         font-size: 0.9rem;
         line-height: 1.5;
         margin-bottom: 8px;
     }
 
+    /* Highlight kode kecil */
     .code-highlight {
-        background-color: rgba(41, 182, 246, 0.1);
+        background-color: rgba(41, 182, 246, 0.1); /* Background biru tipis biar match */
         padding: 2px 6px;
         border-radius: 4px;
         font-family: monospace;
-        color: #29B6F6;
-        font-weight: bold;
+        color: #29B6F6; /* font-weight: bold;
     }
     
+    /* Kotak Langkah Matematika */
     .math-step {
         background-color: rgba(41, 182, 246, 0.05);
         border-left: 4px solid #29B6F6;
@@ -128,69 +131,85 @@ FUNCTION HitungDeretRekursif(a, r, n)
 END FUNCTION
 """, language='vb')
 
-# --- BAGIAN UTAMA YANG DIMODIFIKASI ---
+# --- LOGIKA UTAMA (FIXED) ---
 if st.button("🚀 Jalankan Algoritma & Analisis Grafik"):
-    # 1. Hitung Hasil Akhir (Untuk Display Text)
-    start_iter = time.perf_counter()
-    hasil_iter = hitung_deret_iteratif(a, r, n)
-    end_iter = time.perf_counter()
-    waktu_iter_final = (end_iter - start_iter) * 1000
-
-    start_rec = time.perf_counter()
-    hasil_rec = hitung_deret_rekursif(a, r, n)
-    end_rec = time.perf_counter()
-    waktu_rec_final = (end_rec - start_rec) * 1000
-
-    st.success(f"✅ **Iteratif:** S({n}) = {hasil_iter} | Waktu Akhir = {waktu_iter_final:.6f} ms")
-    st.error(f"🔁 **Rekursif:** S({n}) = {hasil_rec} | Waktu Akhir = {waktu_rec_final:.6f} ms")
-
-    # 2. Persiapkan Data Grafik (Looping dari 1 s.d n)
-    st.write("### 📊 Perbandingan Runtime (Line Chart)")
-    st.caption(f"Mengukur performa dari input n=1 sampai n={n}...")
+    st.write("### 📊 Perbandingan Runtime")
     
+    # Setup Data Collection
     input_range = range(1, n + 1)
     history_iter = []
     history_rec = []
+    
+    # Variabel penampung hasil akhir (value)
+    final_result_iter = 0
+    final_result_rec = 0
 
-    # Progress bar karena looping n kali bisa memakan waktu sedikit
+    # Progress Bar
     progress_bar = st.progress(0)
+    status_text = st.empty()
+
+    # Loop Single Source of Truth
+    # Kita hanya menghitung waktu DI SINI, lalu data terakhir dipakai untuk Teks Display.
+    # Ini menjamin angka di teks sama persis dengan titik terakhir di grafik.
     
     for i, current_n in enumerate(input_range):
-        # Ukur Iteratif
-        t0 = time.perf_counter()
-        hitung_deret_iteratif(a, r, current_n)
-        t1 = time.perf_counter()
-        history_iter.append((t1 - t0) * 1000)
-
-        # Ukur Rekursif
-        t0 = time.perf_counter()
-        hitung_deret_rekursif(a, r, current_n)
-        t1 = time.perf_counter()
-        history_rec.append((t1 - t0) * 1000)
+        status_text.caption(f"Mengukur runtime untuk n={current_n}...")
         
-        # Update progress
+        # 1. Ukur Iteratif
+        t0 = time.perf_counter()
+        res_iter = hitung_deret_iteratif(a, r, current_n)
+        t1 = time.perf_counter()
+        history_iter.append((t1 - t0) * 1000) # Simpan waktu
+        
+        if current_n == n:
+            final_result_iter = res_iter # Simpan hasil hitungan (angka)
+
+        # 2. Ukur Rekursif
+        t0 = time.perf_counter()
+        res_rec = hitung_deret_rekursif(a, r, current_n)
+        t1 = time.perf_counter()
+        history_rec.append((t1 - t0) * 1000) # Simpan waktu
+        
+        if current_n == n:
+            final_result_rec = res_rec # Simpan hasil hitungan (angka)
+
+        # Update Progress
         progress_bar.progress((i + 1) / len(input_range))
 
-    # 3. Membuat Plotting Garis Beririsan
+    status_text.empty() # Hilangkan teks progress
+
+    # Ambil waktu terakhir dari list (Data Grafik) untuk ditampilkan di Teks
+    final_time_iter = history_iter[-1]
+    final_time_rec = history_rec[-1]
+
+    # Tampilkan Text Result (Sekarang Sinkron dengan Grafik)
+    st.success(f"✅ **Iteratif:** S({n}) = {final_result_iter} | Waktu = {final_time_iter:.6f} ms")
+    st.error(f"🔁 **Rekursif:** S({n}) = {final_result_rec} | Waktu = {final_time_rec:.6f} ms")
+
+    # Tampilkan Grafik Line Chart Beririsan
     fig, ax = plt.subplots(figsize=(8, 4))
     
-    # Plot Garis Iteratif
+    # Plot Garis
     ax.plot(input_range, history_iter, label='Iteratif O(n)', color='#4CAF50', linewidth=2)
-    # Plot Garis Rekursif
     ax.plot(input_range, history_rec, label='Rekursif O(n)', color='#F44336', linewidth=2, linestyle='--')
 
-    # Dekorasi Grafik
-    ax.set_title(f"Komparasi Waktu Eksekusi (1 s.d {n})")
+    # Highlight Titik Terakhir (Visual Check)
+    ax.scatter([n], [final_time_iter], color='#4CAF50', s=50, zorder=5)
+    ax.scatter([n], [final_time_rec], color='#F44336', s=50, zorder=5)
+
+    # Anotasi angka di ujung grafik
+    ax.annotate(f'{final_time_iter:.4f} ms', (n, final_time_iter), xytext=(0, -15), textcoords='offset points', ha='center', fontsize=8, color='green')
+    ax.annotate(f'{final_time_rec:.4f} ms', (n, final_time_rec), xytext=(0, 10), textcoords='offset points', ha='center', fontsize=8, color='red')
+
+    ax.set_title(f"Grafik Pertumbuhan Waktu (Input 1 s.d {n})")
+    ax.set_ylabel('Waktu (ms)')
     ax.set_xlabel('Input Size (n)')
-    ax.set_ylabel('Waktu Eksekusi (ms)')
-    ax.legend() # Ini yang membuat label muncul
-    ax.grid(True, linestyle=':', alpha=0.6)
-
-    # Mengisi area di antara garis (opsional, untuk efek visual "beririsan/gap")
-    ax.fill_between(input_range, history_iter, history_rec, color='grey', alpha=0.1)
-
+    ax.legend()
+    ax.grid(True, alpha=0.3, linestyle='--')
+    
     st.pyplot(fig)
-# --- AKHIR MODIFIKASI ---
+
+# --- BAGIAN TEORI LENGKAP (DIKEMBALIKAN) ---
 
 st.subheader("🔢 Analisis & Pembuktian Matematis")
 st.caption("Penjelasan langkah demi langkah kenapa kompleksitasnya Linear O(n).")
