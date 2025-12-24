@@ -29,13 +29,12 @@ st.markdown("""
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 15px;
-        height: 300px; /* Set fixed height for equal box sizes */
+        height: 300px;
         display: flex;
         flex-direction: column;
-        overflow-y: auto; /* Add scroll if content exceeds height */
+        overflow-y: auto;
     }
     
-    /* Judul di dalam kotak */
     .desc-container h4 {
         margin-top: 0;
         margin-bottom: 10px;
@@ -45,24 +44,21 @@ st.markdown("""
         padding-bottom: 5px;
     }
 
-    /* Teks paragraf & list */
     .desc-container p, .desc-container li {
         font-size: 0.9rem;
         line-height: 1.5;
         margin-bottom: 8px;
     }
 
-    /* Highlight kode kecil */
     .code-highlight {
-        background-color: rgba(41, 182, 246, 0.1); /* Background biru tipis biar match */
+        background-color: rgba(41, 182, 246, 0.1);
         padding: 2px 6px;
         border-radius: 4px;
         font-family: monospace;
-        color: #29B6F6; /* 
+        color: #29B6F6;
         font-weight: bold;
     }
     
-    /* Kotak Langkah Matematika */
     .math-step {
         background-color: rgba(41, 182, 246, 0.05);
         border-left: 4px solid #29B6F6;
@@ -97,7 +93,8 @@ with col1:
     a = st.number_input("Suku Pertama (a):", value=2, step=1)
     r = st.number_input("Rasio (r):", value=3, step=1)
 with col2:
-    n = st.number_input("Jumlah n Suku (n):", min_value=1, value=10, step=1)
+    # Sedikit limitasi n agar grafik tidak terlalu lama digenerate saat looping
+    n = st.number_input("Jumlah n Suku (n):", min_value=1, max_value=900, value=10, step=1)
 
 st.subheader("📝 Pseudocode Algoritma")
 
@@ -131,62 +128,69 @@ FUNCTION HitungDeretRekursif(a, r, n)
 END FUNCTION
 """, language='vb')
 
-if st.button("🚀 Jalankan Algoritma"):
+# --- BAGIAN UTAMA YANG DIMODIFIKASI ---
+if st.button("🚀 Jalankan Algoritma & Analisis Grafik"):
+    # 1. Hitung Hasil Akhir (Untuk Display Text)
     start_iter = time.perf_counter()
     hasil_iter = hitung_deret_iteratif(a, r, n)
     end_iter = time.perf_counter()
-    waktu_iter = (end_iter - start_iter) * 1000
+    waktu_iter_final = (end_iter - start_iter) * 1000
 
     start_rec = time.perf_counter()
     hasil_rec = hitung_deret_rekursif(a, r, n)
     end_rec = time.perf_counter()
-    waktu_rec = (end_rec - start_rec) * 1000
+    waktu_rec_final = (end_rec - start_rec) * 1000
 
-    st.success(f"✅ **Iteratif:** S({n}) = {hasil_iter} | Waktu = {waktu_iter:.6f} ms")
-    st.error(f"🔁 **Rekursif:** S({n}) = {hasil_rec} | Waktu = {waktu_rec:.6f} ms")
+    st.success(f"✅ **Iteratif:** S({n}) = {hasil_iter} | Waktu Akhir = {waktu_iter_final:.6f} ms")
+    st.error(f"🔁 **Rekursif:** S({n}) = {hasil_rec} | Waktu Akhir = {waktu_rec_final:.6f} ms")
 
-    st.write("### 📊 Perbandingan Runtime")
-    fig, ax = plt.subplots(figsize=(8, 3))
-    methods = ['Iteratif', 'Rekursif']
-    times = [waktu_iter, waktu_rec]
-    colors = ['#4CAF50', '#F44336']
-
-    bars = ax.bar(methods, times, color=colors, width=0.6)
-
-    for bar in bars:
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2., height,
-                f'{height:.4f} ms', ha='center', va='bottom')
-
-    ax.set_ylabel('Waktu (ms)')
-    st.pyplot(fig)
-
-if st.checkbox(f"📈 Tampilkan Grafik Pertumbuhan (n=1 s.d {n})"):
-    st.write(f"Memproses data grafik...")
-    ns = range(1, n + 1)
-    times_iter = []
-    times_rec = []
+    # 2. Persiapkan Data Grafik (Looping dari 1 s.d n)
+    st.write("### 📊 Perbandingan Runtime (Line Chart)")
+    st.caption(f"Mengukur performa dari input n=1 sampai n={n}...")
     
-    progress = st.progress(0)
-    for i, val_n in enumerate(ns):
-        t0 = time.perf_counter()
-        hitung_deret_iteratif(a, r, val_n)
-        times_iter.append((time.perf_counter() - t0) * 1000)
+    input_range = range(1, n + 1)
+    history_iter = []
+    history_rec = []
 
+    # Progress bar karena looping n kali bisa memakan waktu sedikit
+    progress_bar = st.progress(0)
+    
+    for i, current_n in enumerate(input_range):
+        # Ukur Iteratif
         t0 = time.perf_counter()
-        hitung_deret_rekursif(a, r, val_n)
-        times_rec.append((time.perf_counter() - t0) * 1000)
+        hitung_deret_iteratif(a, r, current_n)
+        t1 = time.perf_counter()
+        history_iter.append((t1 - t0) * 1000)
+
+        # Ukur Rekursif
+        t0 = time.perf_counter()
+        hitung_deret_rekursif(a, r, current_n)
+        t1 = time.perf_counter()
+        history_rec.append((t1 - t0) * 1000)
         
-        progress.progress((i + 1) / len(ns))
+        # Update progress
+        progress_bar.progress((i + 1) / len(input_range))
+
+    # 3. Membuat Plotting Garis Beririsan
+    fig, ax = plt.subplots(figsize=(8, 4))
     
-    fig2, ax2 = plt.subplots(figsize=(10, 5))
-    ax2.plot(ns, times_iter, label='Iteratif O(n)', color='green', marker='o', markersize=4)
-    ax2.plot(ns, times_rec, label='Rekursif O(n)', color='red', marker='x', markersize=4)
-    ax2.set_xlabel('Input Size (n)')
-    ax2.set_ylabel('Waktu (ms)')
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
-    st.pyplot(fig2)
+    # Plot Garis Iteratif
+    ax.plot(input_range, history_iter, label='Iteratif O(n)', color='#4CAF50', linewidth=2)
+    # Plot Garis Rekursif
+    ax.plot(input_range, history_rec, label='Rekursif O(n)', color='#F44336', linewidth=2, linestyle='--')
+
+    # Dekorasi Grafik
+    ax.set_title(f"Komparasi Waktu Eksekusi (1 s.d {n})")
+    ax.set_xlabel('Input Size (n)')
+    ax.set_ylabel('Waktu Eksekusi (ms)')
+    ax.legend() # Ini yang membuat label muncul
+    ax.grid(True, linestyle=':', alpha=0.6)
+
+    # Mengisi area di antara garis (opsional, untuk efek visual "beririsan/gap")
+    ax.fill_between(input_range, history_iter, history_rec, color='grey', alpha=0.1)
+
+    st.pyplot(fig)
+# --- AKHIR MODIFIKASI ---
 
 st.subheader("🔢 Analisis & Pembuktian Matematis")
 st.caption("Penjelasan langkah demi langkah kenapa kompleksitasnya Linear O(n).")
