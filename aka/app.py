@@ -5,109 +5,133 @@ import time
 import sys
 
 matplotlib.use('Agg')
-
 sys.setrecursionlimit(10**6)
-sys.set_int_max_str_digits(0)
+if sys.version_info >= (3, 11):
+    sys.set_int_max_str_digits(0)
 
-def hitung_deret_iteratif(a, r, n):
-    total_jumlah = 0
-    suku_sekarang = a
-
-    for _ in range(n):
-        total_jumlah += suku_sekarang
-        suku_sekarang = suku_sekarang * r
-
-    return total_jumlah
-
-def hitung_deret_rekursif(a, r, n):
-    if n == 1:
-        return a
-
-    return a + (r * hitung_deret_rekursif(a, r, n - 1))
-
-st.set_page_config(page_title="Analisis Algoritma - Deret Geometri", layout="centered")
+st.set_page_config(page_title="Analisis Algoritma", layout="centered")
 
 st.markdown("""
 <style>
+    /* Agar code block rapi di HP */
     @media only screen and (max-width: 600px) {
         [data-testid="stCodeBlock"] pre {
             white-space: pre-wrap !important;
             word-wrap: break-word !important;
         }
-        [data-testid="stCodeBlock"] code {
-            font-size: 11px !important;
-        }
+    }
+
+    /* Kotak Penjelasan (Card Style) */
+    .desc-container {
+        background-color: rgba(41, 182, 246, 0.1);
+        border: 1px solid rgba(41, 182, 246, 0.4);
+        color: inherit;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        height: 300px; /* Set fixed height for equal box sizes */
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto; /* Add scroll if content exceeds height */
+    }
+    
+    /* Judul di dalam kotak */
+    .desc-container h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #29B6F6 !important;
+        border-bottom: 1px solid rgba(41, 182, 246, 0.2);
+        padding-bottom: 5px;
+    }
+
+    /* Teks paragraf & list */
+    .desc-container p, .desc-container li {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    /* Highlight kode kecil */
+    .code-highlight {
+        background-color: rgba(41, 182, 246, 0.1); /* Background biru tipis biar match */
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        color: #29B6F6; /* 
+        font-weight: bold;
+    }
+    
+    /* Kotak Langkah Matematika */
+    .math-step {
+        background-color: rgba(41, 182, 246, 0.05);
+        border-left: 4px solid #29B6F6;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.95rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
+def hitung_deret_iteratif(a, r, n):
+    total_jumlah = 0
+    suku_sekarang = a
+    for _ in range(n):
+        total_jumlah += suku_sekarang
+        suku_sekarang = suku_sekarang * r
+    return total_jumlah
+
+def hitung_deret_rekursif(a, r, n):
+    if n == 1:
+        return a
+    return a + (r * hitung_deret_rekursif(a, r, n - 1))
+
 st.title("🌐 Perbandingan Iteratif vs Rekursif")
 st.subheader("Studi Kasus: Menghitung Jumlah Deret Geometri (Sn)")
 
-st.info("""
-ℹ️ **Info:** Aplikasi ini menghitung **Jumlah Total ($S_n$)** dari barisan geometri.
-Contoh: Jika a=2, r=3, n=3. Maka $2 + 6 + 18 = 26$.
-""")
+st.info("Aplikasi ini menghitung **Jumlah Total** ($S_n$) dari barisan geometri.")
 
-st.write("### Masukkan Parameter Deret")
 col1, col2 = st.columns(2)
-
 with col1:
     a = st.number_input("Suku Pertama (a):", value=2, step=1)
     r = st.number_input("Rasio (r):", value=3, step=1)
-
 with col2:
     n = st.number_input("Jumlah n Suku (n):", min_value=1, value=10, step=1)
 
-st.markdown("---")
 st.subheader("📝 Pseudocode Algoritma")
-st.caption("Berikut adalah logika (pseudocode) untuk menghitung **TOTAL DERET**:")
 
 tab_iter, tab_rec = st.tabs(["🔹 Algoritma Iteratif", "🔸 Algoritma Rekursif"])
 
 with tab_iter:
-    st.markdown("##### Pendekatan Iteratif (Akumulasi)")
-    st.write("Menggunakan variabel `total` untuk menampung penjumlahan setiap suku.")
-
-    code_iteratif = """
+    st.markdown("##### Pendekatan Iteratif (Looping)")
+    st.write("Menggunakan variabel penampung untuk menjumlahkan nilai.")
+    st.code("""
 FUNCTION HitungDeretIteratif(a, r, n)
     total = 0
     current_term = a
-
-    // Loop sebanyak n kali
     FOR i FROM 1 TO n DO
-        total = total + current_term  // Tambahkan suku ke total
-        current_term = current_term * r // Hitung suku berikutnya
+        total = total + current_term
+        current_term = current_term * r
     END FOR
-
     RETURN total
 END FUNCTION
-    """
-    st.code(code_iteratif, language='vb')
+""", language='vb')
 
 with tab_rec:
     st.markdown("##### Pendekatan Rekursif")
-    st.write("Menggunakan sifat matematis $S_n = a + r(S_{n-1})$ untuk efisiensi.")
-
-    code_rekursif = """
+    st.write("Memanggil fungsi dirinya sendiri sampai mencapai base case.")
+    st.code("""
 FUNCTION HitungDeretRekursif(a, r, n)
-    // Base Case: Jika hanya 1 suku, kembalikan a
     IF n == 1 THEN
         RETURN a
-
-    // Recursive Step
     ELSE
-        // Rumus: a + (r * HasilRekursifSebelumnya)
         RETURN a + (r * HitungDeretRekursif(a, r, n - 1))
     END IF
-
 END FUNCTION
-"""
-    st.code(code_rekursif, language='vb')
+""", language='vb')
 
-
-if st.button("Jalankan Algoritma"):
-
+if st.button("🚀 Jalankan Algoritma"):
     start_iter = time.perf_counter()
     hasil_iter = hitung_deret_iteratif(a, r, n)
     end_iter = time.perf_counter()
@@ -121,37 +145,29 @@ if st.button("Jalankan Algoritma"):
     st.success(f"✅ **Iteratif:** S({n}) = {hasil_iter} | Waktu = {waktu_iter:.6f} ms")
     st.error(f"🔁 **Rekursif:** S({n}) = {hasil_rec} | Waktu = {waktu_rec:.6f} ms")
 
-    st.write("### 📊 Perbandingan Waktu Eksekusi")
-
-    fig, ax = plt.subplots(figsize=(8, 4))
+    st.write("### 📊 Perbandingan Runtime")
+    fig, ax = plt.subplots(figsize=(8, 3))
     methods = ['Iteratif', 'Rekursif']
     times = [waktu_iter, waktu_rec]
-    colors = ['green', 'red']
+    colors = ['#4CAF50', '#F44336']
 
-    bars = ax.bar(methods, times, color=colors, width=0.5)
+    bars = ax.bar(methods, times, color=colors, width=0.6)
 
     for bar in bars:
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width()/2., height,
-                f'{height:.6f} ms',
-                ha='center', va='bottom')
+                f'{height:.4f} ms', ha='center', va='bottom')
 
     ax.set_ylabel('Waktu (ms)')
-    ax.set_title(f'Runtime Menghitung Jumlah {n} Suku Pertama')
     st.pyplot(fig)
 
-st.markdown("---")
-tampilkan_grafik = st.checkbox(f"Tampilkan grafik runtime (n = 1 hingga {n})")
-
-if tampilkan_grafik:
-    st.write(f"Memproses data grafik untuk n=1 s.d {n}...")
-
+if st.checkbox(f"📈 Tampilkan Grafik Pertumbuhan (n=1 s.d {n})"):
+    st.write(f"Memproses data grafik...")
     ns = range(1, n + 1)
     times_iter = []
     times_rec = []
-
-    progress_bar = st.progress(0)
-
+    
+    progress = st.progress(0)
     for i, val_n in enumerate(ns):
         t0 = time.perf_counter()
         hitung_deret_iteratif(a, r, val_n)
@@ -160,92 +176,103 @@ if tampilkan_grafik:
         t0 = time.perf_counter()
         hitung_deret_rekursif(a, r, val_n)
         times_rec.append((time.perf_counter() - t0) * 1000)
-
-        progress_bar.progress((i + 1) / len(ns))
-
+        
+        progress.progress((i + 1) / len(ns))
+    
     fig2, ax2 = plt.subplots(figsize=(10, 5))
-
-    ax2.plot(ns, times_iter, label='Iteratif', color='green', marker='o', linestyle='-')
-    ax2.plot(ns, times_rec, label='Rekursif', color='red', marker='x', linestyle='--')
-
-    ax2.set_xlabel('Nilai n (Jumlah Suku)')
+    ax2.plot(ns, times_iter, label='Iteratif O(n)', color='green', marker='o', markersize=4)
+    ax2.plot(ns, times_rec, label='Rekursif O(n)', color='red', marker='x', markersize=4)
+    ax2.set_xlabel('Input Size (n)')
     ax2.set_ylabel('Waktu (ms)')
-    ax2.set_title('Grafik Perbandingan: Runtime vs Input Size (Deret)')
     ax2.legend()
-    ax2.grid(True, linestyle='--', alpha=0.6)
-
+    ax2.grid(True, alpha=0.3)
     st.pyplot(fig2)
 
-st.markdown("---")
-st.subheader("📝 Penjelasan & Analisis Logika")
+st.subheader("🔢 Analisis & Pembuktian Matematis")
+st.caption("Penjelasan langkah demi langkah kenapa kompleksitasnya Linear O(n).")
 
-st.markdown("""
-<style>
-    .desc-container {
-        background-color: transparent;
-        border: 1px solid rgba(41, 182, 246, 0.3);
-        color: inherit;
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 20px;
+math_tab1, math_tab2 = st.tabs(["📐 Analisis Iteratif (Sigma)", "📐 Analisis Rekursif (Substitusi)"])
 
-        height: 480px !important;
-        overflow-y: auto;
+with math_tab1:
+    st.markdown(r"""
+    <div class="desc-container">
+        <h4>1. Analisis Loop dengan Notasi Sigma (Σ)</h4>
+        <p>Pada algoritma iteratif, kita menjumlahkan biaya (cost) dari setiap baris kode yang dieksekusi.</p>
+        <p><b>Identifikasi Biaya:</b></p>
+        <ul>
+            <li>Inisialisasi (<span class="code-highlight">total=0</span>) = Konstan (<i>c<sub>init</sub></i>)</li>
+            <li>Operasi dalam Loop (<span class="code-highlight">+</span> dan <span class="code-highlight">*</span>) = Konstan (<i>c<sub>ops</sub></i>)</li>
+            <li>Karena operasi dalam loop selalu sama (tidak tergantung nilai i), kita pakai <b>Sum of 1</b>.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-        display: flex;
-        flex-direction: column;
-    }
+    st.latex(r"T(n) = c_{\mathrm{init}} + \sum_{i=1}^{n} (c_{\mathrm{ops}})")
 
-    .desc-container::-webkit-scrollbar {
-        width: 6px;
-    }
-    .desc-container::-webkit-scrollbar-thumb {
-        background-color: rgba(41, 182, 246, 0.3);
-        border-radius: 4px;
-    }
+    st.markdown(r"""
+    <div class='math-step'>
+        Menggunakan rumus deret aritmatika konstanta <b>&Sigma; 1 = n</b>:
+    </div>
+    """, unsafe_allow_html=True)
 
-    .desc-container h4 {
-        margin-bottom: 12px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #29B6F6 !important;
-        border-bottom: 1px solid rgba(41, 182, 246, 0.2);
-        padding-bottom: 10px;
+    st.latex(r"""
+    \begin{aligned}
+    T(n) &= c_{\mathrm{init}} + c_{\mathrm{ops}} \cdot n \\
+    T(n) &\approx C \cdot n
+    \end{aligned}
+    """)
+    
+    st.success("Kesimpulan: Karena pangkat tertinggi dari n adalah 1, maka kompleksitasnya **Linear O(n)**.")
 
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-    }
+with math_tab2:
+    st.markdown(r"""
+    <div class="desc-container">
+        <h4>2. Analisis Rekursif dengan Metode Substitusi</h4>
+        <p>Pada rekursif, waktu eksekusi dinyatakan sebagai fungsi rekurensi <i>T(n)</i>.</p>
+        <p><b>Relasi Rekurensi:</b></p>
+        <ul>
+            <li><b>Base Case (n=1):</b> Hanya return. Biaya = <i>c<sub>1</sub></i>.</li>
+            <li><b>Recursive Step (n>1):</b> 1x pemanggilan rekursif (<i>T(n-1)</i>) + operasi aritmatika (<i>c<sub>2</sub></i>).</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-    .desc-container p, .desc-container li {
-        font-size: 0.85rem;
-        line-height: 1.5;
-        opacity: 0.9;
-        margin-bottom: 8px;
-    }
+    st.latex(r"""
+    T(n) = \begin{cases} 
+    c_1 & \text{jika } n = 1 \\
+    T(n-1) + c_2 & \text{jika } n > 1 
+    \end{cases}
+    """)
 
-    .desc-container ul, .desc-container ol {
-        padding-left: 18px;
-        margin-top: 5px;
-        margin-bottom: 10px;
-    }
+    st.markdown(r"""
+    <div class='math-step'>
+        <b>Langkah Substitusi Mundur (Unfolding):</b><br>
+        Kita ganti <i>T(n-1)</i> dengan definisinya sendiri berulang kali.
+    </div>
+    """, unsafe_allow_html=True)
 
-    .desc-container code {
-        background-color: rgba(41, 182, 246, 0.1);
-        padding: 2px 5px;
-        border-radius: 4px;
-        font-family: monospace;
-        color: #B3E5FC;
-        font-size: 0.8rem;
-    }
+    st.latex(r"""
+    \begin{aligned}
+    T(n) &= T(n-1) + c_2 \\
+    &= (T(n-2) + c_2) + c_2 = T(n-2) + 2c_2 \\
+    &= T(n-3) + 3c_2 \\
+    &\dots \\
+    &= T(n-k) + k \cdot c_2
+    \end{aligned}
+    """)
 
-    @media (max-width: 768px) {
-        .desc-container {
-            height: auto !important;
-        }
-    }
-</style>
-""", unsafe_allow_html=True)
+    st.markdown(r"""
+    <div class='math-step'>
+        <b>Mencari Base Case:</b><br>
+        Berhenti saat <i>n - k = 1</i> yang berarti <i>k = n - 1</i>.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.latex(r"T(n) = c_1 + c_2(n-1) \approx A \cdot n + B")
+
+    st.error("Kesimpulan: Hasil akhirnya adalah fungsi linear, maka kompleksitasnya **Linear O(n)**.")
+
+st.subheader("📚 Teori Dasar")
 
 c1, c2, c3 = st.columns(3)
 
@@ -259,9 +286,9 @@ with c1:
         <p><b>Rumus:</b> $S_n = a(r^n - 1) / (r - 1)$ (untuk r>1)</p>
         <p><b>Variabel:</b></p>
         <ul>
-            <li><code>a</code>: Suku awal.</li>
-            <li><code>r</code>: Rasio pengali.</li>
-            <li><code>n</code>: Jumlah iterasi.</li>
+            <li><span class="code-highlight">a</span>: Suku awal.</li>
+            <li><span class="code-highlight">r</span>: Rasio pengali.</li>
+            <li><span class="code-highlight">n</span>: Jumlah iterasi.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
