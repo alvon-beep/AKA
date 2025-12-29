@@ -225,7 +225,7 @@ with math_tab1:
         <ul>
             <li>Inisialisasi (<span class="code-highlight">total=0</span>) = Konstan (<i>c<sub>init</sub></i>)</li>
             <li>Operasi dalam Loop (<span class="code-highlight">+</span> dan <span class="code-highlight">*</span>) = Konstan (<i>c<sub>ops</sub></i>)</li>
-            <li>Karena operasi dalam loop selalu sama (tidak tergantung nilai i), kita pakai <b>Sum of 1</b>.</li>
+            <li>Karena operasi dalam loop selalu sama (tidak tergantung nilai i), kita pakai <b>Sum of 2</b>.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -234,7 +234,7 @@ with math_tab1:
 
     st.markdown(r"""
     <div class='math-step'>
-        Menggunakan rumus deret aritmatika konstanta <b>&Sigma; 1 = n</b>:
+        Menggunakan rumus deret aritmatika konstanta <b>&Sigma; 2 = n</b>:
     </div>
     """, unsafe_allow_html=True)
 
